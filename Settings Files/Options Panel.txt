@@ -1,0 +1,24 @@
+Option_Panel,Network
+Network_Path,D:\Testing\Engine\Cell Mgt\Glue\
+Part_1065.Ignition_Type,Compression
+Part_1065.IsOn,1
+Part_1065.CO2_dil,Ambient
+Part_1065.CO2_int,Ambient
+Part_1065.O2CO2_intdry,0.209820
+Part_1065.KH2Ogas,3.5
+RF_CH4,1.1185
+RFPF_C2H6,0.0
+Range_Change_Level,0.8
+Bag_Dilute_Ranges_Locked,1
+ISO_8178.IsOn,0
+ISO_8178.Combustion,Complete
+ISO_8178.Fuel_And_Air_Flow,Off
+ISO_8178.Air_Flow,Off
+ISO_8178.Fuel_Flow,On
+ISO_8178.GasPressure,On
+ISO_8178.MolarMass,Off
+Number_CDRs,1
+CDR_1,SpindtAnalysis.txt
+CDR_1_Location,Network
+Part_1065.DriftCorrection,1
+Part_1065.HCContaminationCorrection,1
