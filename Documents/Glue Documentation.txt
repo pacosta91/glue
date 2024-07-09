@@ -1,0 +1,170 @@
+Glue - Release Version 1.0
+==========================
+
+Contents:
+1. Installation
+2. General Use
+3. Working with the options files
+4. PM Calculation Use
+5. User-Defined Table Use
+6. The Standard Channel List
+
+-------------------------
+1. INSTALLATION
+
+-To install place this folder anywhere on your computer.
+
+-Open MATLAB and select File>>Set Path...
+
+-In the Set Path dialog select Add with Subfolders
+
+-Navigate to this folder and select that.
+
+To connect your computer to the ETRE database use the following instructions:
+
+a. Open control panel and goto Administrative Tools, then Data Sources (ODBC)
+
+b. On the top menu select System DSN
+
+c. Click the "Add" Button
+
+d. On the first panel set the following values: Name = ETRESQL
+                                              Server = STEAMBOAT\SQLEXPRESS
+   And click next
+
+e. On the second panel set the following values: Uncheck with Windows NT authentication
+						 Check with SQL Server authentication
+                                                 Check connect to SQL Server to obtain default
+                                                 Login ID: sa
+                                                 Password: vtre
+
+   And click next
+
+f. On the third panel set the following values: Change the default database to: ETRE
+                                                Check use ANSI quoted identifiers
+                                                Check use ANSI nulls, paddings and warnings.
+   And click next
+
+g. Click Finish
+
+h. A pop up will be displayed - click test data source, this should succeed.
+
+You have now successfully established a connection to the ETRE database.
+
+-------------------------
+2. General Use
+
+Glue is setup to be run in two different manners.
+
+In the first method Glue can be run without receiving any sort of command line variables. In this method you will prompted to select a file from a dialog - this dialog defaults to \\Detroit\D\Customer Data\Engine Testing; at this time this cannot be changed without changing the underlying m-file, Glue.m.
+
+In the second method Glue accepts the file and path name as an argument and operates on that particular file. This in particular is useful for automation type applications, this method differs from the first in that the results are written to a Test Results folder that is in the same folder as the test file. Also when Glue has finished it forces MATLAB to close.
+
+Glue needs some information that doesn't come from the .csv test file. This information comes from a variety of input files. These input files are the Options Panel.txt, which holds the global options which (generally) aren't specific to the test, the Standard Channel List, which is responsible for the organization of channels in the composite test results, the ETRE database, which is responsible for the test specific options such as fuel properties and zero-span information. There is a final input file which isn't quite ready for prime time, this is the customer-defined report. There is also an input file which is used for performing any PM calculations
+
+The process will produce two output files regardless of the operation method, these two outputs are the streaming and composite results. It is not possible for MATLAB to accidentally overwrite these files. And you will be provided the opportunity to determine where the files are saved.
+
+-------------------------
+3. Working with the Options Files
+
+There are in effect several options files. The options file of greatest concern is the one located in the directory. This is the default option file and without adjusting any parameters in it. This option file can be changed to point at different options files on a server. The options files that are on the server differ from cell to cell, i.e. Options Panel EW4.txt. The following list details the parameters that are available and how to alter them
+
+Option_Panel					Network
+Network_Path					//Detroit/d/Customer/_Data/Engine/_Testing/Test_Cell_Management/Template/_Management/
+Ignition_Type					Compression
+Part_1065					On
+CO2_dildry					Ambient
+CO2_intdry					Ambient
+O2CO2_intdry					0.209820
+KH2Ogas						3.5
+RF_CH4						1.0
+RFPF_C2H6					0.0
+Range_Change_Level  				0.8
+Bag_Dilute_Ranges_Locked			No
+ISO_8178.IsOn					Off
+Combustion					Complete
+ISO_8178.Fuel_And_Air_Flow			Off
+ISO_8178.Air_Flow				Off
+ISO_8178.Fuel_Flow				On
+ISO_8178.GasPressure				On
+ISO_8178.MolarMass				Off
+Number_UDTs					1
+UDT_1						Sample.udt
+UDT_1_Location					Network
+
+Option_Panel: can be set to either Network or Local depending on user preference
+
+Network_Path: is the designated location of the files that need to be brought into Glue when Option_Panel is set to Network, keep in mind that the local Option_Panel governs the operation. This means that the local file will always control whether or not the program operates on the network, and where the program looks to. Also important is that spaces interfere with the import process and so the network path uses the combination of characters /_ to represent a space.
+
+Ignition_Type: Either spark or compression, this adjusts calculation of a few parameters in the Part 1065 chemical balance, namely the NOx correction and how NOx is subdivided into NO and NO2.
+
+Part_1065: This allows the test, in particular coming from OE1 and OE2, to skip Part 1065 calculations in a stable and predictable manner.
+
+CO2_dildry: This is the amount of CO2 in the dry dilution air, it is used in the chemical balance; currently this is the measured ambient value. The user may change this to a particular value, the value recommended in part 1065 is 0.000375
+
+CO2_intdry: This is the amount of CO2 in the dry intake air, it is used in the chemical balance; currently this is the measured ambient value. The user may change this to a particular value, the value recommended in part 1065 is 0.000375
+
+O2CO2_intdry: This is the amount of O2 and CO2 in the dry intake air, this is the value recommended by the Part 1065.
+
+KH2Ogas: is the water-gas reaction equilibrium coefficient. This is set to the Part1065 recommendation of 3.5.
+
+RF_CH4: This is the response factor of the hydrocarbon analyzer to methane; should be close to one - and this will vary per test cell.
+
+RFPF_C2H6: This is the response factor/penetration factor of the methane analyzer to ethane; should be close to zero - this will vary by test cell
+
+Range_Change_Level: Is the percentage of maximum concentration where the analyzer is kicked into the next range. The current value is set at 80%.
+
+Bag_Dilute_Ranges_Locked: When a Cert Test isn't being run and this is set to No then the ranges aren't locked and can change modally. This influences the way that the drift correction is performed.
+
+ISO_8178.IsOn: This is currently deprecated - when the ISO calculations are completed this will be available for subsonic testing.
+
+Combustion: This is currently deprecated
+
+ISO_8178.Fuel_And_Air_Flow: This is currently deprecated
+
+ISO_8178.Air_Flow: This is currently deprecated
+
+ISO_8178.Fuel_Flow: This is currently deprecated
+
+ISO_8178.GasPressure: This is currently deprecated
+
+ISO_8178.MolarMass: This is currently deprecated
+
+Number_UDTs: This is currently deprecated, it will eventually allow for several customer defined tables to be included in the composite report
+
+UDT_N: Currently deprecated, in the future this will point to the desired udt file
+
+UDT_N_Location: Currently deprecated, in the future this will point to the desired udt file
+
+----------------------------
+4. PM Calculation Use
+
+The PM calculation will be performed when a file containing the PM weights is left on the Network Path, or the local path depending on the current operation mode of Glue. The file should have a name following the convention:
+
+		[TestNumber]_PM.txt
+
+ex.
+
+		0433_PM.txt
+
+and should have each filter weight on a distinct line such as
+
+0.0216
+0.0385
+0.0189
+
+For a three filter set.
+
+Eventually this will be eliminated when the PM Weights are recorded in the database and acquired without any additional input.
+
+-----------------------------
+5. User-Defined Table Use
+
+For now this should be limited to selecting only the desired channels. There is some capability for performing calculations but this lacks robustness and reliability.
+
+-----------------------------
+6. The Standard Channel List
+
+This is the document which is responsible for the organization of the composite results. Anything that is included in this list should be a standard output. If a standard output is not included on a test then that position will be filled with a '-' on the composite output. This way all standard outputs have a constant position across several tests, and cells.
+
+This can be changed around - but it is preferable to leave this be.

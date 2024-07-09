@@ -1,0 +1,63 @@
+Glue v.1.1.1
+x	Bug Fix: Option to save output to user defined location now works
+	Feature: Standard channel positions are now locked on the streaming data export, vacant channels receive '-'
+	
+Glue v.1.1.2
+x	Stability Enhancement: Glue will now operate on data that can't be run through the 1065 calculator
+	Report Format: Glue will now only present the controlling analyzer of the CO_l_Tailpipe and CO_h_Tailpipe tandem
+	Report Format: Glue now imports the validity flag and presents it in the Header Table
+x	Stability Enhancement: If HHC isn't available then Glue will use HC for BAG_DILUTE 1065 calculations
+
+Glue v.1.1.3
+x	Feature: Glue is now able to use HC as well as HHC to perform the Part 1065 Chemical Balance for Bag/Dilute Emissions; a warning message is displayed when HC is used in any cell other than EW3.
+x	Feature: Corrected units, Glue now automatically replaces 'Grams' with 'g', 'C°' with '°C', 'F°' with '°F', and 'l/m' with 'L/m'.
+	Feature: Glue expects certain units based on the Standard Channel List, if these units are not the same as the units in the raw file then Glue will alarm the user and adjust the column headers to reflect the existing units.
+x	Feature: The Options Panel option, Part_1065 On/Off is now working, it can be used to skip Part_1065 calculations in a stable manner.
+	Report Format: A new field has been added to the Composite Output, and an existing field has been modified. The existing field, test notes, is now set to PreTest_Comment; this is the REPS comment field. The new field, PostTest_Comment is the ECCS Post Test Dialog Comment Field. The Test Void flag has been set to '-' while the database communication issue is being resolved.
+x	Bug Fix: Having a CO(h)_Bag/Dilute_Bench Analyzer causes Glue to fail, this channel is for the time being ignored and is dropped from the emissions report. In time this Channel will not be an exceptional occurrence and will be treated similar to the way CO(h) and CO(l) are handled for the Tailpipe Bench.
+
+Glue v.1.1.4
+	Report Format: Glue will now only display the drift report (and corresponding header) if Part 1065 Calculations have been performed
+x	Option: The user is given the option to turn off the drift correction for 1065 calculations
+
+Glue v.1.1.5
+x	Channel Handling: Glue will now undoes a VZS adjustment performed by ECCS using only the pre test spans and zeros before applying the Part 1065 VZS adjustment, "Drift Correction". It should be noted that when bad VZS data is populated in the database (such as when we skip zero spans) this has a very detrimental effect on the Drift Report and causes the percent error to go to infinite.
+x	Channel Handling: Glue now performs a calculation Q_CVS_C and Q_CVS_Mol_C which accounts for sampling on the raw benches. This is the value that must be used in all calculations using CVS flow. While Q_CVS does give an adequate accounting for the flow in the tunnel it does not incorporate the loss of exhaust to the raw benches. This means that any calculation (such as for PM and MSS) using Q_CVS will under report the actual value.
+x	Feature: Glue now allows for multiple file selection, or batch processing. This should allow you to process data in a more stream-lined manner. This is setup in a fashion that allows subsequent tests to be run, even if a preceding file failed to be processed.
+x	Bug Fix: The Part  1065 Chemical Balance now has a iteration ceiling of 100 iterations. This will prevent MATLAB from being stuck inside an endless loop when the data doesn't conform. A message is displayed when the ceiling is reached alerting the user to the fact that the data was not able to come to a solution.
+x	Report Format: The test cell is now correctly listed for the Engine Cells.
+	Report Format: When no aftertreatment is inuse the aftertreatment for all 4 positions will read as None. Previously, only the first position read none and the subsequent positions to read "-"
+	Report Format: A typographical error (ironically a misspelling of error) has been eliminated from the drift report.
+	Report Format: Due to the addition of the channels Q_CVS_C and Q_CVS_Mol_C, the standard channel list has been altered. This will be reflected in the composite and streaming outputs from here on out.
+	
+Glue v.1.1.5.1
+	Options Handling: ECCS can prevent certain ranges from being used during a test. The database is populated with zeros for the unused range, this is no longer exceptional and is treated within the bounds of the code.
+	
+Glue v.2.0.0. (SuperGlue)
+
+Glue v.2.1.0
+	Fixed major bugs
+	
+Glue v.2.1.1.
+	Improvements to PM Report
+	
+Glue v.2.1.2.
+	Modified Channels class to allow processing of tests without analyzers.
+	
+Glue v.2.1.3.
+	 Bug Fix for Modal Weighting
+	 Bug Fix for Trim to Cycle Length
+	
+Glue v.2.1.4.
+	Bug Fix for PM Report
+	
+Glue v.2.1.5.
+	Improced MSS Calculation in PM Report - Should now adequately handle MSS sampling in different locations except when MSS sampling is performed in position 6 of a vee-engine. This position corresponds with a post aftertreatment sampling position on the right bank of cylinders. As it is not likely that we will sample one bank for MSS this has been ruled an acceptable assumption by KDV and JAS.
+	
+Glue v.2.2.0
+	Revamped Feature: Customer Defined Tables are now supported. There is some degree of flexibility in this - but it isn't quite complete yet. Currently one table per composite report is supported. Values from Options such as Test_Name are available, some values can be converted (for example mm.Hg can be converted to kPa). Miscellaneous calculations are not supported yet.
+	The MSS calculation is now performed over the continuous data instead of performing the calculation using cycle averages. This was done to eliminate some conspicuous errors in BSMSS during transient tests.
+	A handful of changes have been made to accomodate the approaching change in ECCS where certain quantities such as Work and Volumes are accumulated as opposed to averaged over the time step. These changes should allow Glue to smoothly transition with the upgrade to ECCS.
+	
+Glue v.2.3.0
+	Set glue up to read PM data from VTRE database; if a PM file does exist for the test then that file is used instead. Adjusted the calculation of Q_CVS_C so that it is calculated for all V_Bypass flow rates from 0-60 scf/hr.
